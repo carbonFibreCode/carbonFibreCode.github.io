@@ -4,7 +4,7 @@ This repository hosts the official static website for **Finshyt** and other proj
 
 ## 📄 Important Links
 - **Home:** [https://carbonFibreCode.github.io](https://carbonFibreCode.github.io)
-- **Privacy Policy:** [https://carbonFibreCode.github.io/privacy](https://carbonFibreCode.github.io/privacy)
+- **Finsight Privacy Policy:** [https://carbonFibreCode.github.io/privacy](https://carbonFibreCode.github.io/privacy)
 
 ## 🛠️ Technical Details
 - **Static Site Generator:** Jekyll
