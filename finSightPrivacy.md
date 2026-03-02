@@ -3,12 +3,12 @@ layout: default
 title: Privacy Policy
 ---
 
-# Privacy Policy for Finshyt
+# Privacy Policy for FinSight
 
 **Last Updated: March 2, 2026**
 
 ### 1. Introduction
-Finshyt ("we," "our," or "the App") is committed to protecting your privacy. This Privacy Policy explains how we handle your data. The App is designed as a "privacy-first" tool, meaning your financial data stays under your control on your own device.
+FinSight ("we," "our," or "the App") is committed to protecting your privacy. This Privacy Policy explains how we handle your data. The App is designed as a "privacy-first" tool, meaning your financial data stays under your control on your own device.
 
 ### 2. Information Collection and Use
 To provide automated expense tracking, the App requires access to sensitive information. We only process this data locally on your device:
