@@ -1,6 +1,6 @@
 # 🌐 carbonFibreCode.github.io
 
-This repository hosts the official static website for **Finshyt** and other projects by Arun Kumar.
+This repository hosts the official static website for apps by Arun Kumar.
 
 ## 📄 Important Links
 - **Home:** [https://carbonFibreCode.github.io](https://carbonFibreCode.github.io)
