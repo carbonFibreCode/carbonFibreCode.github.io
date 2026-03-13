@@ -527,3 +527,22 @@ a:hover {
   .blog-card { padding: 1.5rem; }
 }
 
+/* Resume Styles */
+.resume-viewer-container {
+  margin-top: 2rem;
+  width: 100%;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+[data-theme="dark"] .resume-viewer-container {
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+@media (max-width: 768px) {
+  .resume-viewer-container iframe {
+    height: 600px;
+  }
+}
+
