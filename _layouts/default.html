@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ page.title | default: site.title }}</title>
+    <meta name="description" content="{{ page.description | default: site.description }}">
+    <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <a href="{{ '/' | relative_url }}">Arun<span class="text-gradient">Kumar</span></a>
+            </div>
+            <ul class="nav-links">
+                <li><a href="{{ '/' | relative_url }}#experience">Experience</a></li>
+                <li><a href="{{ '/' | relative_url }}#open-source">Open Source</a></li>
+                <li><a href="{{ '/' | relative_url }}#projects">Projects</a></li>
+                <li><a href="{{ '/finSightPrivacy' | relative_url }}">Privacy Policy</a></li>
+            </ul>
+            <div class="hamburger" aria-label="Toggle menu">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+    
+    <main class="main-content">
+        {{ content }}
+    </main>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <p>&copy; 2026 Arun Kumar. Building robust systems.</p>
+            <div class="social-links">
+                <a href="mailto:arun.kumar.ug23@nsut.ac.in" target="_blank" rel="noopener noreferrer"><i class="fas fa-envelope"></i></a>
+                <a href="https://github.com/carbonFibreCode" target="_blank" rel="noopener noreferrer"><i class="fab fa-github"></i></a>
+                <a href="https://www.linkedin.com/in/arun-kumar-7a535b277/" target="_blank" rel="noopener noreferrer"><i class="fab fa-linkedin"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const hamburger = document.querySelector('.hamburger');
+        const navLinks = document.querySelector('.nav-links');
+        
+        hamburger.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            hamburger.querySelector('i').classList.toggle('fa-bars');
+            hamburger.querySelector('i').classList.toggle('fa-times');
+        });
+
+        // Close menu when clicking a link
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.classList.remove('active');
+                hamburger.querySelector('i').classList.add('fa-bars');
+                hamburger.querySelector('i').classList.remove('fa-times');
+            });
+        });
+
+        // Smooth scrolling for anchor elements
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                var targetId = this.getAttribute('href');
+                if (targetId && targetId !== '#') {
+                    // It's a hash link, try scrolling if on same page
+                    if(window.location.pathname === '/' || window.location.pathname === '/index.html') {
+                        e.preventDefault();
+                        const id = targetId.substring(1);
+                        const targetElem = document.getElementById(id);
+                        if (targetElem) {
+                            targetElem.scrollIntoView({
+                                behavior: 'smooth'
+                            });
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

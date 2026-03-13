@@ -2,6 +2,7 @@
 layout: default
 title: Privacy Policy
 ---
+<div class="prose" markdown="1">
 
 # Privacy Policy for FinSight
 
@@ -31,3 +32,5 @@ We **do not** sell, trade, or share your personal or financial data with third p
 
 ### 6. Contact Us
 If you have any questions, please contact the developer at kumararun97429@gmail.com.
+
+</div>

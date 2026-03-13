@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy</title>
+    <meta name="description" content="Arun Kumar - Software Developer & AI Engineer">
+    <link rel="stylesheet" href="/assets/css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <a href="/">Arun<span class="text-gradient">Kumar</span></a>
+            </div>
+            <ul class="nav-links">
+                <li><a href="/#experience">Experience</a></li>
+                <li><a href="/#open-source">Open Source</a></li>
+                <li><a href="/#projects">Projects</a></li>
+                <li><a href="/finSightPrivacy">Privacy Policy</a></li>
+            </ul>
+            <div class="hamburger" aria-label="Toggle menu">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+    
+    <main class="main-content">
+        <div class="prose">
+
+  <h1 id="privacy-policy-for-finsight">Privacy Policy for FinSight</h1>
+
+  <p><strong>Last Updated: March 2, 2026</strong></p>
+
+  <h3 id="introduction">1. Introduction</h3>
+  <p>FinSight (“we,” “our,” or “the App”) is committed to protecting your privacy. This Privacy Policy explains how we handle your data. The App is designed as a “privacy-first” tool, meaning your financial data stays under your control on your own device.</p>
+
+  <h3 id="information-collection-and-use">2. Information Collection and Use</h3>
+  <p>To provide automated expense tracking, the App requires access to sensitive information. We only process this data locally on your device:</p>
+  <ul>
+    <li><strong>SMS Data:</strong> The App reads incoming SMS messages to detect transaction alerts from banks and payment providers.</li>
+    <li><strong>Notifications:</strong> The App monitors system notifications to identify successful payment alerts from UPI and banking applications.</li>
+    <li><strong>Accessibility Services:</strong> With your explicit consent, we use Accessibility Services to detect payment success screens within other apps to provide precise transaction logging.</li>
+    <li><strong>Transaction Details:</strong> We extract amounts, merchant names, and timestamps to create your financial dashboard.</li>
+  </ul>
+
+  <h3 id="data-storage-local-only">3. Data Storage (Local-Only)</h3>
+  <ul>
+    <li><strong>No Cloud Sync:</strong> All detected transactions and financial insights are stored exclusively in your device’s local storage.</li>
+    <li><strong>User Control:</strong> Because data is stored locally, deleting the App or clearing App data will permanently remove your transaction history. We do not maintain backups on any external servers.</li>
+  </ul>
+
+  <h3 id="data-sharing">4. Data Sharing</h3>
+  <p>We <strong>do not</strong> sell, trade, or share your personal or financial data with third parties. No data is transmitted off your device.</p>
+
+  <h3 id="permissions-required">5. Permissions Required</h3>
+  <ul>
+    <li><strong>SMS:</strong> To parse bank alerts.</li>
+    <li><strong>Notifications:</strong> To detect payment app alerts.</li>
+    <li><strong>Accessibility:</strong> To log transactions from payment success screens.</li>
+  </ul>
+
+  <h3 id="contact-us">6. Contact Us</h3>
+  <p>If you have any questions, please contact the developer at kumararun97429@gmail.com.</p>
+
+</div>
+
+    </main>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <p>&copy; 2026 Arun Kumar. Building robust systems.</p>
+            <div class="social-links">
+                <a href="mailto:arun.kumar.ug23@nsut.ac.in" target="_blank" rel="noopener noreferrer"><i class="fas fa-envelope"></i></a>
+                <a href="https://github.com/carbonFibreCode" target="_blank" rel="noopener noreferrer"><i class="fab fa-github"></i></a>
+                <a href="https://www.linkedin.com/in/arun-kumar-7a535b277/" target="_blank" rel="noopener noreferrer"><i class="fab fa-linkedin"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const hamburger = document.querySelector('.hamburger');
+        const navLinks = document.querySelector('.nav-links');
+        
+        hamburger.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            hamburger.querySelector('i').classList.toggle('fa-bars');
+            hamburger.querySelector('i').classList.toggle('fa-times');
+        });
+
+        // Close menu when clicking a link
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.classList.remove('active');
+                hamburger.querySelector('i').classList.add('fa-bars');
+                hamburger.querySelector('i').classList.remove('fa-times');
+            });
+        });
+
+        // Smooth scrolling for anchor elements
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                var targetId = this.getAttribute('href');
+                if (targetId && targetId !== '#') {
+                    // It's a hash link, try scrolling if on same page
+                    if(window.location.pathname === '/' || window.location.pathname === '/index.html') {
+                        e.preventDefault();
+                        const id = targetId.substring(1);
+                        const targetElem = document.getElementById(id);
+                        if (targetElem) {
+                            targetElem.scrollIntoView({
+                                behavior: 'smooth'
+                            });
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

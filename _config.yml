@@ -1,12 +1,10 @@
-title: carbonFibre
+title: Arun Kumar | Portfolio
 email: kumararun97429@gmail.com
-description: Official support and privacy center for apps developed by carbonFibre.
+description: Arun Kumar - Software Developer & AI Engineer
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "https://carbonFibreCode.github.io"
 twitter_username: no_arun_
 github_username:  carbonFibreCode
 
-# Using a popular Jekyll theme
-remote_theme: pages-themes/minimal@v0.2.0
 plugins:
-  - jekyll-remote-theme
+  - jekyll-feed
