@@ -1,1 +1,44 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.4.1">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2026-03-13T17:13:00+05:30</updated><id>http://localhost:4000/feed.xml</id><title type="html">Arun Kumar | Portfolio</title><subtitle>Arun Kumar - Software Developer &amp; AI Engineer</subtitle></feed>
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.4.1">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2026-03-13T17:42:38+05:30</updated><id>http://localhost:4000/feed.xml</id><title type="html">Arun Kumar | Portfolio</title><subtitle>Arun Kumar - Software Developer &amp; AI Engineer</subtitle><entry><title type="html">Beyond the Fix: Orchestrating Data Migrations in Twenty (YC23)</title><link href="http://localhost:4000/engineering/open-source/2026/02/18/solving-date-time-filter-consistency-in-twenty.html" rel="alternate" type="text/html" title="Beyond the Fix: Orchestrating Data Migrations in Twenty (YC23)" /><published>2026-02-18T00:00:00+05:30</published><updated>2026-02-18T00:00:00+05:30</updated><id>http://localhost:4000/engineering/open-source/2026/02/18/solving-date-time-filter-consistency-in-twenty</id><content type="html" xml:base="http://localhost:4000/engineering/open-source/2026/02/18/solving-date-time-filter-consistency-in-twenty.html"><![CDATA[<p>Contributing to <strong>Twenty</strong>, the leading open-source CRM alternative to Salesforce, is rarely just about fixing a bug. It’s about understanding the architectural ripples of every change. My recent work on the <code class="language-plaintext highlighter-rouge">DATE_TIME</code> filtering logic is a prime example of how a simple UI friction point can lead to a multi-stage deployment strategy involving data migrations and feature flags.</p>
+
+<h3 id="the-problem-precision-vs-intent">The Problem: Precision vs. Intent</h3>
+
+<p>The core issue (<a href="https://github.com/twentyhq/core-team-issues/issues/2027">core-team-issues #2027</a>) centered on the <code class="language-plaintext highlighter-rouge">DATE_TIME IS</code> operand. Technically, it was “correct”—it filtered for a specific minute. But users don’t think in minutes; they think in days.</p>
+
+<p>If a user filtered for “Records on February 18,” they expected everything from midnight to 11:59 PM. Instead, they were stuck with a <code class="language-plaintext highlighter-rouge">DateTimePicker</code> that felt like a hurdle rather than a tool. Furthermore, filtering on a precise point in time is notoriously brittle across global teams where “now” varies by 24 hours.</p>
+
+<h3 id="the-strategy-two-prs-one-goal">The Strategy: Two PRs, One Goal</h3>
+
+<p>After discussing the approach with <a href="https://github.com/lucasbordeau">Lucas Bordeau</a>, we decided to split the resolution into two distinct Pull Requests to ensure a safe, zero-downtime rollout.</p>
+
+<h4 id="phase-1-foundational-logic--feature-flags-pr-17529">Phase 1: Foundational Logic &amp; Feature Flags (<a href="https://github.com/twentyhq/twenty/pull/17529">PR #17529</a>)</h4>
+<p>The first step was building the infrastructure for the “new way” while maintaining compatibility for the “old way.”</p>
+<ul>
+  <li><strong>Timezone Awareness</strong>: I updated the backend (<code class="language-plaintext highlighter-rouge">view-query-params.service.ts</code>) to fetch the active workspace member’s timezone instead of defaulting to UTC.</li>
+  <li><strong>Operand Refactoring</strong>: Modified the GraphQL operation generator to transform a single date into a <code class="language-plaintext highlighter-rouge">gte</code> / <code class="language-plaintext highlighter-rouge">lt</code> range (Start of Day to End of Day).</li>
+  <li><strong>Feature Flagging</strong>: We introduced a feature flag, initially set to <code class="language-plaintext highlighter-rouge">false</code>. This allowed the code to be merged without immediately affecting production users before their data was ready.</li>
+</ul>
+
+<h4 id="phase-2-the-data-migration-pr-17564">Phase 2: The Data Migration (<a href="https://github.com/twentyhq/twenty/pull/17564">PR #17564</a>)</h4>
+<p>Existing users already had thousands of saved view filters stored in ISO format (e.g., <code class="language-plaintext highlighter-rouge">2024-01-31T12:00:00Z</code>). Simply flipping the code logic would have broken these saved views.</p>
+<ul>
+  <li><strong>The Migration Command</strong>: I authored a migration command that identified old <code class="language-plaintext highlighter-rouge">DATE_TIME</code> filter values containing an ISO ‘T’ and converted them to plain date strings (<code class="language-plaintext highlighter-rouge">2024-01-31</code>).</li>
+  <li><strong>Cache Flushing</strong>: To ensure the UI updated instantly, the migration was designed to flush the virtualized table metadata cache.</li>
+  <li><strong>Rollout</strong>: The strategy involved running this migration and concurrently setting the feature flag to <code class="language-plaintext highlighter-rouge">true</code> within the same process.</li>
+</ul>
+
+<h3 id="testing-for-the-extremes">Testing for the Extremes</h3>
+
+<p>Engineering for global users means testing for edge cases. Per Lucas’s suggestion, I performed QA by setting my local machine to <strong>Auckland (UTC+13)</strong> and the Twenty workspace setting to <strong>Samoa (UTC-11)</strong>. This 24-hour shift is the ultimate “stress test” for date logic—if your filter still catches the right records here, it works anywhere.</p>
+
+<h3 id="lessons-in-open-source-stewardship">Lessons in Open Source Stewardship</h3>
+
+<p>This contribution reinforced a vital lesson for any DevX or Core Engineer: <strong>Implementation is only 50% of the work.</strong> The other 50% is ensuring that the transition for existing users is seamless.</p>
+
+<p>By coordinating a feature-flagged rollout and a robust data migration, we moved the needle on Twenty’s UX without a single broken saved view.</p>
+
+<hr />
+
+<ul>
+  <li><strong>See the Code Fix</strong>: <a href="https://github.com/twentyhq/twenty/pull/17529">Twenty PR #17529</a></li>
+  <li><strong>Check the Data Migration</strong>: <a href="https://github.com/twentyhq/twenty/pull/17564">Twenty PR #17564</a></li>
+</ul>]]></content><author><name></name></author><category term="engineering" /><category term="open-source" /><summary type="html"><![CDATA[How a 'simple' date filter fix evolved into a cross-repo coordination of feature flags, data migrations, and timezone-aware engineering.]]></summary></entry></feed>

@@ -1,0 +1,25 @@
+---
+layout: default
+---
+
+<article class="post-container">
+  <header class="post-header">
+    <h1 class="post-title">{{ page.title }}</h1>
+    <div class="post-meta">
+      <time datetime="{{ page.date | date_to_xmlschema }}">
+        {{ page.date | date: "%B %-d, %Y" }}
+      </time>
+      {% if page.author %}
+        <span>• {{ page.author }}</span>
+      {% endif %}
+    </div>
+  </header>
+
+  <div class="post-content prose" markdown="1">
+    {{ content }}
+  </div>
+
+  <footer class="post-footer">
+    <a href="{{ '/blog' | relative_url }}" class="back-link">← Back to Blog</a>
+  </footer>
+</article>

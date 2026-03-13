@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beyond the Fix: Orchestrating Data Migrations in Twenty (YC23)</title>
+    <meta name="description" content="Arun Kumar - Software Developer & AI Engineer">
+    <link rel="stylesheet" href="/assets/css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <a href="/">Arun<span class="text-gradient">Kumar</span></a>
+            </div>
+            <ul class="nav-links">
+                <li><a href="/#experience">Experience</a></li>
+                <li><a href="/#open-source">Open Source</a></li>
+                <li><a href="/#projects">Projects</a></li>
+                <li><a href="/blog">Blog</a></li>
+                <li><a href="/finSightPrivacy">Privacy Policy</a></li>
+            </ul>
+            <div class="hamburger" aria-label="Toggle menu">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+    
+    <main class="main-content">
+        <article class="post-container">
+  <header class="post-header">
+    <h1 class="post-title">Beyond the Fix: Orchestrating Data Migrations in Twenty (YC23)</h1>
+    <div class="post-meta">
+      <time datetime="2026-02-18T00:00:00+05:30">
+        February 18, 2026
+      </time>
+      
+    </div>
+  </header>
+
+  <div class="post-content prose" markdown="1">
+    <p>Contributing to <strong>Twenty</strong>, the leading open-source CRM alternative to Salesforce, is rarely just about fixing a bug. It’s about understanding the architectural ripples of every change. My recent work on the <code class="language-plaintext highlighter-rouge">DATE_TIME</code> filtering logic is a prime example of how a simple UI friction point can lead to a multi-stage deployment strategy involving data migrations and feature flags.</p>
+
+<h3 id="the-problem-precision-vs-intent">The Problem: Precision vs. Intent</h3>
+
+<p>The core issue (<a href="https://github.com/twentyhq/core-team-issues/issues/2027">core-team-issues #2027</a>) centered on the <code class="language-plaintext highlighter-rouge">DATE_TIME IS</code> operand. Technically, it was “correct”—it filtered for a specific minute. But users don’t think in minutes; they think in days.</p>
+
+<p>If a user filtered for “Records on February 18,” they expected everything from midnight to 11:59 PM. Instead, they were stuck with a <code class="language-plaintext highlighter-rouge">DateTimePicker</code> that felt like a hurdle rather than a tool. Furthermore, filtering on a precise point in time is notoriously brittle across global teams where “now” varies by 24 hours.</p>
+
+<h3 id="the-strategy-two-prs-one-goal">The Strategy: Two PRs, One Goal</h3>
+
+<p>After discussing the approach with <a href="https://github.com/lucasbordeau">Lucas Bordeau</a>, we decided to split the resolution into two distinct Pull Requests to ensure a safe, zero-downtime rollout.</p>
+
+<h4 id="phase-1-foundational-logic--feature-flags-pr-17529">Phase 1: Foundational Logic &amp; Feature Flags (<a href="https://github.com/twentyhq/twenty/pull/17529">PR #17529</a>)</h4>
+<p>The first step was building the infrastructure for the “new way” while maintaining compatibility for the “old way.”</p>
+<ul>
+  <li><strong>Timezone Awareness</strong>: I updated the backend (<code class="language-plaintext highlighter-rouge">view-query-params.service.ts</code>) to fetch the active workspace member’s timezone instead of defaulting to UTC.</li>
+  <li><strong>Operand Refactoring</strong>: Modified the GraphQL operation generator to transform a single date into a <code class="language-plaintext highlighter-rouge">gte</code> / <code class="language-plaintext highlighter-rouge">lt</code> range (Start of Day to End of Day).</li>
+  <li><strong>Feature Flagging</strong>: We introduced a feature flag, initially set to <code class="language-plaintext highlighter-rouge">false</code>. This allowed the code to be merged without immediately affecting production users before their data was ready.</li>
+</ul>
+
+<h4 id="phase-2-the-data-migration-pr-17564">Phase 2: The Data Migration (<a href="https://github.com/twentyhq/twenty/pull/17564">PR #17564</a>)</h4>
+<p>Existing users already had thousands of saved view filters stored in ISO format (e.g., <code class="language-plaintext highlighter-rouge">2024-01-31T12:00:00Z</code>). Simply flipping the code logic would have broken these saved views.</p>
+<ul>
+  <li><strong>The Migration Command</strong>: I authored a migration command that identified old <code class="language-plaintext highlighter-rouge">DATE_TIME</code> filter values containing an ISO ‘T’ and converted them to plain date strings (<code class="language-plaintext highlighter-rouge">2024-01-31</code>).</li>
+  <li><strong>Cache Flushing</strong>: To ensure the UI updated instantly, the migration was designed to flush the virtualized table metadata cache.</li>
+  <li><strong>Rollout</strong>: The strategy involved running this migration and concurrently setting the feature flag to <code class="language-plaintext highlighter-rouge">true</code> within the same process.</li>
+</ul>
+
+<h3 id="testing-for-the-extremes">Testing for the Extremes</h3>
+
+<p>Engineering for global users means testing for edge cases. Per Lucas’s suggestion, I performed QA by setting my local machine to <strong>Auckland (UTC+13)</strong> and the Twenty workspace setting to <strong>Samoa (UTC-11)</strong>. This 24-hour shift is the ultimate “stress test” for date logic—if your filter still catches the right records here, it works anywhere.</p>
+
+<h3 id="lessons-in-open-source-stewardship">Lessons in Open Source Stewardship</h3>
+
+<p>This contribution reinforced a vital lesson for any DevX or Core Engineer: <strong>Implementation is only 50% of the work.</strong> The other 50% is ensuring that the transition for existing users is seamless.</p>
+
+<p>By coordinating a feature-flagged rollout and a robust data migration, we moved the needle on Twenty’s UX without a single broken saved view.</p>
+
+<hr />
+
+<ul>
+  <li><strong>See the Code Fix</strong>: <a href="https://github.com/twentyhq/twenty/pull/17529">Twenty PR #17529</a></li>
+  <li><strong>Check the Data Migration</strong>: <a href="https://github.com/twentyhq/twenty/pull/17564">Twenty PR #17564</a></li>
+</ul>
+
+  </div>
+
+  <footer class="post-footer">
+    <a href="/blog" class="back-link">← Back to Blog</a>
+  </footer>
+</article>
+
+    </main>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <p>&copy; 2026 Arun Kumar. Building robust systems.</p>
+            <div class="social-links">
+                <a href="mailto:arun.kumar.ug23@nsut.ac.in" target="_blank" rel="noopener noreferrer"><i class="fas fa-envelope"></i></a>
+                <a href="https://github.com/carbonFibreCode" target="_blank" rel="noopener noreferrer"><i class="fab fa-github"></i></a>
+                <a href="https://www.linkedin.com/in/arun-kumar-7a535b277/" target="_blank" rel="noopener noreferrer"><i class="fab fa-linkedin"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const hamburger = document.querySelector('.hamburger');
+        const navLinks = document.querySelector('.nav-links');
+        
+        hamburger.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            hamburger.querySelector('i').classList.toggle('fa-bars');
+            hamburger.querySelector('i').classList.toggle('fa-times');
+        });
+
+        // Close menu when clicking a link
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.classList.remove('active');
+                hamburger.querySelector('i').classList.add('fa-bars');
+                hamburger.querySelector('i').classList.remove('fa-times');
+            });
+        });
+
+        // Smooth scrolling for anchor elements
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                var targetId = this.getAttribute('href');
+                if (targetId && targetId !== '#') {
+                    // It's a hash link, try scrolling if on same page
+                    if(window.location.pathname === '/' || window.location.pathname === '/index.html') {
+                        e.preventDefault();
+                        const id = targetId.substring(1);
+                        const targetElem = document.getElementById(id);
+                        if (targetElem) {
+                            targetElem.scrollIntoView({
+                                behavior: 'smooth'
+                            });
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
